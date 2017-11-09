@@ -5,7 +5,7 @@ describe('updating records', () => {
   let edwina;
 
   beforeEach((done) => {
-    edwina = new User({name:'edwina anky'});
+    edwina = new User({name:'edwina anky',postCount:0});
     edwina.save().then(() => done());
   });
 
@@ -41,6 +41,19 @@ describe('updating records', () => {
 
   it('should update with model class findByIdAndUpdate', (done) => {
     assertName(User.findByIdAndUpdate(edwina._id, {name:'parande'}), done)
+  });
+
+  // been updated to support virtual field
+  it('increment user postCount', (done) => {
+    User.update({name:'edwina anky'},{$inc:{likes:1}})
+    .then(() =>
+      User.findOne({name:'edwina anky'})
+    )
+    .then((user) => {
+        assert(user.likes === 1);
+        done();
+    });
+
   });
 
 })
