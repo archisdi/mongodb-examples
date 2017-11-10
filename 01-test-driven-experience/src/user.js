@@ -23,6 +23,13 @@ UserSchema.virtual('postCount').get(function(){
   return this.posts.length;
 });
 
+// pre middleware
+UserSchema.pre('remove',function (next) {
+  const BlogPost = mongoose.model('blogPost');
+  BlogPost.remove({_id:{$in:this.blogposts}})
+  .then(() => next())
+});
+
 const User = mongoose.model('user', UserSchema);
 
 module.exports = User;
